@@ -1,8 +1,15 @@
 const request = require('supertest');
+const knex = require('knex');
 
 const server = require('./server.js');
+const dbConfig = require('../knexfile.js')
+
+const db = knex(dbConfig.development);
+
+
 
 describe('the api layer', () => {
+    
     describe('get /', () => {
         it('responds with 200', async () => {
             const response = await request(server).get('/');
@@ -21,6 +28,10 @@ describe('the api layer', () => {
     });
 
     describe('post /', () => {
+        
+        afterEach(async () => {
+            await db('games').truncate();
+        });
 
         it('response with 422 if info missing', async () => {
             const body = {
@@ -29,16 +40,17 @@ describe('the api layer', () => {
               };
             const response = await request(server).post('/').send(body);
             expect(response.status).toBe(422);
+            db('games').truncate();
         })
 
-        it('responds with 400', async () => {
+        it('responds with 201', async () => {
             const body = {
                 title: 'Pacman', // required
                 genre: 'Arcade', // required
                 releaseYear: 1980 // not required
               };
             const response = await request(server).post('/').send(body);
-            expect(response.status).toBe(400);
+            expect(response.status).toBe(201);
         });
 
         it('responds with array', async () => {
