@@ -10,24 +10,24 @@ const db = knex(dbConfig.development);
 
 describe('the api layer', () => {
     
-    describe('get /', () => {
+    describe('get /games', () => {
         it('responds with 200', async () => {
-            const response = await request(server).get('/');
+            const response = await request(server).get('/games');
             expect(response.status).toBe(200);
         });
 
         it('responds with json', async () => {
-            const response = await request(server).get('/');
+            const response = await request(server).get('/games');
             expect(response.type).toMatch(/json/i);
         });
 
         it('sends correct response object', async () => {
-            const response = await request(server).get('/');
+            const response = await request(server).get('/games');
             expect(response.body).toEqual([]);
         });
     });
 
-    describe('post /', () => {
+    describe('post /games', () => {
         
         afterEach(async () => {
             await db('games').truncate();
@@ -38,7 +38,7 @@ describe('the api layer', () => {
                 title: 'Pacman', // required
                 releaseYear: 1980 // not required
               };
-            const response = await request(server).post('/').send(body);
+            const response = await request(server).post('/games').send(body);
             expect(response.status).toBe(422);
             db('games').truncate();
         })
@@ -49,7 +49,7 @@ describe('the api layer', () => {
                 genre: 'Arcade', // required
                 releaseYear: 1980 // not required
               };
-            const response = await request(server).post('/').send(body);
+            const response = await request(server).post('/games').send(body);
             expect(response.status).toBe(201);
         });
 
@@ -59,7 +59,7 @@ describe('the api layer', () => {
                 genre: 'Arcade', // required
                 releaseYear: 1980 // not required
               };
-            const response = await request(server).post('/').send(body);
+            const response = await request(server).post('/games').send(body);
             expect(response.body.length).toBe(1);
         });
         

@@ -8,7 +8,7 @@ const db = knex(dbConfig.development);
 server.use(express.json());
 
 
-server.get('/', (req, res) => {
+server.get('/games', (req, res) => {
   db('games')
   .then(rows => {
     res.status(200).json(rows);
@@ -18,7 +18,7 @@ server.get('/', (req, res) => {
     })
 })
 
-server.post('/', (req, res) => {
+server.post('/games', (req, res) => {
   const body = req.body;
   if (body.title && body.genre) {
     db('games').insert(body)
